@@ -118,11 +118,11 @@ Backend: `http://localhost:3001`
 ## Screenshots
 
 - Landing:
-![alt text](<Screenshot 2026-03-22 at 12.27.03 PM.png>)
+![alt text](<Screenshots/Screenshot 2026-03-22 at 12.27.03 PM.png>)
 - Lobby:
-![alt text](<Screenshot 2026-03-22 at 12.27.33 PM.png>)
+![alt text](<Screenshots/Screenshot 2026-03-22 at 12.27.33 PM.png>)
 - Session:
-![alt text](<Screenshot 2026-03-22 at 12.30.57 PM.png>)
+![alt text](<Screenshots/Screenshot 2026-03-22 at 12.30.57 PM.png>)
 - Results:
-![alt text](<Screenshot 2026-03-22 at 12.31.51 PM.png>)
+![alt text](<Screenshots/Screenshot 2026-03-22 at 12.31.51 PM.png>)
 
