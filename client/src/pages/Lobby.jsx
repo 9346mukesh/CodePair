@@ -48,7 +48,7 @@ export default function Lobby() {
       .catch(() => {})
   }, [roomCode])
 
-  const link = `codepair.dev/join/${roomCode}`
+  const link = `${typeof window !== 'undefined' ? window.location.origin : ''}/join/${roomCode}`
 
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-10">

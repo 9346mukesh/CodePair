@@ -7,6 +7,7 @@ create table if not exists rooms (
   language text,
   difficulty text,
   type text,
+  problem_id text,
   status text default 'lobby',
   created_at timestamptz default now()
 );

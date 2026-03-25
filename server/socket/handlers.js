@@ -108,6 +108,18 @@ export function registerSocketHandlers(io) {
       })()
     })
 
+    socket.on('timer_update', ({ roomCode, elapsed, phase, phaseElapsed, phaseTimeLimit }) => {
+      const code = String(roomCode || socket.data.roomCode || '').toUpperCase()
+      if (!code) return
+      // Broadcast timer state for partners.
+      io.to(code).emit('timer_update', {
+        elapsed: typeof elapsed === 'number' ? elapsed : 0,
+        phase: phase || 'Understand',
+        phaseElapsed: typeof phaseElapsed === 'number' ? phaseElapsed : 0,
+        phaseTimeLimit: phaseTimeLimit ?? null,
+      })
+    })
+
     socket.on('end_session', ({ roomCode }) => {
       const code = String(roomCode || '').toUpperCase()
       if (!code) return

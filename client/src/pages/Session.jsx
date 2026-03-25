@@ -203,6 +203,16 @@ export default function Session() {
 
       const p = PHASES[phaseIdxRef.current]
       const limit = p.minutes * 60_000
+
+      if (isCreator && socket) {
+        socket.emit('timer_update', {
+          roomCode,
+          elapsed: e,
+          phase: p.key,
+          phaseElapsed: phaseElapsedRef.current,
+          phaseTimeLimit: limit,
+        })
+      }
       if (phaseElapsedRef.current >= limit) {
         const nextIdx = Math.min(PHASES.length - 1, phaseIdxRef.current + 1)
         if (nextIdx !== phaseIdxRef.current) {
@@ -425,6 +435,26 @@ export default function Session() {
                 socket?.emit('end_session', { roomCode })
 
                 let evaluation = null
+                let evaluationError = null
+                const executionResult = result
+                const executionSummary = executionResult
+                  ? {
+                      status: executionResult.status,
+                      execution_time: executionResult.execution_time,
+                      memory_used: executionResult.memory_used,
+                      tests: Array.isArray(executionResult.tests)
+                        ? executionResult.tests.map((t) => ({
+                            status: t.status,
+                            pass: t.pass,
+                            execution_time: t.execution_time,
+                            memory_used: t.memory_used,
+                            // Keep the payload small; the AI doesn't need full stdout/stderr dumps.
+                            stdout: typeof t.stdout === 'string' ? t.stdout.slice(0, 250) : '',
+                            stderr: typeof t.stderr === 'string' ? t.stderr.slice(0, 250) : '',
+                          }))
+                        : [],
+                    }
+                  : null
                 try {
                   const names = participants.map((p) => p.userName).filter(Boolean)
                   const res = await api.post('/api/ai/evaluate', {
@@ -433,14 +463,23 @@ export default function Session() {
                     finalCode: code,
                     language,
                     sessionId: activeSessionId,
+                    problemId: assignedProblem?.id,
+                    problemTitle: assignedProblem?.title,
+                    problemDifficulty: assignedProblem?.difficulty,
+                    executionSummary,
                   })
                   evaluation = res.data
-                } catch {
+                } catch (e) {
                   evaluation = null
+                  evaluationError =
+                    e?.response?.data?.error ||
+                    e?.response?.data?.raw ||
+                    e?.message ||
+                    'AI evaluation failed'
                 }
 
                 nav(`/results/${activeSessionId}`, {
-                  state: { sessionId: activeSessionId, roomCode, evaluation },
+                  state: { sessionId: activeSessionId, roomCode, evaluation, evaluationError, executionSummary },
                 })
               }}
               className="w-full rounded-md border border-red-500/60 bg-[#0b0f14] px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-500/10"

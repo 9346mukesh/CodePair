@@ -30,6 +30,7 @@ router.post('/create', async (req, res) => {
       language: state.room.language,
       difficulty: state.room.difficulty,
       type: state.room.type,
+      problem_id: state.room.problemId || null,
       status: 'lobby',
     })
   }

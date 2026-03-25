@@ -2,7 +2,7 @@
 
 AI-powered collaborative coding interview practice for two candidates in a shared room: **real-time Monaco editor**, **pair chat**, **AI interviewer**, and **Judge0 execution**.
 
-- Demo GIF: *(placeholder — add `docs/demo.gif`)*
+
 
 ## Architecture
 
@@ -45,7 +45,7 @@ AI-powered collaborative coding interview practice for two candidates in a share
 - [x] Results page: score gauge + per-participant breakdown (mock data placeholder)
 - [x] Problems Library: 20 preloaded cards (UI)
 - [x] Supabase persistence: rooms/sessions/messages/evals/snapshots (schema + best-effort wiring)
-- [ ] Session replay timeline + html2canvas share card
+- [x] Session replay timeline + html2canvas share card
 
 ## Tech stack
 
@@ -93,6 +93,7 @@ Backend: `http://localhost:3001`
 | C → S | `cursor_move` | `{ roomCode, userId, position }` |
 | C → S | `chat_message` | `{ roomCode, userId, message }` |
 | C → S | `phase_change` | `{ roomCode, newPhase }` |
+| C → S | `timer_update` (creator only) | `{ roomCode, elapsed, phase, phaseElapsed, phaseTimeLimit }` |
 | C → S | `end_session` | `{ roomCode }` |
 | S → C | `partner_joined` | `{ userName, userId, color }` |
 | S → C | `partner_left` | `{ userId }` |
@@ -113,6 +114,8 @@ Backend: `http://localhost:3001`
 4. Put these values in `client/.env`:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
+
+Note: `rooms` includes `problem_id` so the assigned problem is consistent for both candidates after reload.
 
 
 ## Screenshots

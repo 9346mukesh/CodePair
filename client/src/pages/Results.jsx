@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import html2canvas from 'html2canvas'
 import ReplayTimeline from '../components/ReplayTimeline'
@@ -53,20 +53,9 @@ export default function Results() {
   const [shareStatus, setShareStatus] = useState('')
   const [showReplay, setShowReplay] = useState(false)
 
-  const mock = {
-    overall_score: 82,
-    candidate_scores: {
-      Creator: { problem_solving: 21, communication: 20, code_quality: 18, time_complexity_awareness: 19 },
-      Partner: { problem_solving: 19, communication: 18, code_quality: 17, time_complexity_awareness: 16 },
-    },
-    strengths: ['Clear approach discussion', 'Good test coverage mindset'],
-    areas_for_improvement: ['Earlier complexity analysis', 'More edge cases'],
-    recommended_next_problems: ['Longest Substring Without Repeating Characters', 'Valid Parentheses', 'Binary Tree Level Order Traversal'],
-    session_summary:
-      'You collaborated effectively and converged on an optimal approach after brief exploration. Communication was solid; aim to articulate complexity trade-offs earlier.',
-  }
-
   const passedEvaluation = loc.state?.evaluation || null
+  const evaluationError = loc.state?.evaluationError || null
+  const executionSummary = loc.state?.executionSummary || null
   const [evaluation, setEvaluation] = useState(passedEvaluation)
 
   useEffect(() => {
@@ -79,15 +68,41 @@ export default function Results() {
         if (cancelled) return
         setEvaluation(res.data)
       })
-      .catch(() => {
-        // keep mock fallback
-      })
+      .catch(() => {})
     return () => {
       cancelled = true
     }
   }, [passedEvaluation, sessionId])
 
-  const view = useMemo(() => evaluation || mock, [evaluation, mock])
+  const hasEvaluation = !!evaluation
+  const view = evaluation || {
+    overall_score: 0,
+    candidate_scores: {
+      Creator: {
+        problem_solving: 0,
+        communication: 0,
+        code_quality: 0,
+        time_complexity_awareness: 0,
+      },
+      Partner: {
+        problem_solving: 0,
+        communication: 0,
+        code_quality: 0,
+        time_complexity_awareness: 0,
+      },
+    },
+    strengths: [],
+    areas_for_improvement: [],
+    recommended_next_problems: [],
+    session_summary: '',
+  }
+
+  const testPassCount =
+    executionSummary?.tests && Array.isArray(executionSummary.tests)
+      ? executionSummary.tests.filter((t) => t.pass === true).length
+      : null
+  const testTotalCount =
+    executionSummary?.tests && Array.isArray(executionSummary.tests) ? executionSummary.tests.length : null
 
   const totalTime = loc.state?.totalTime || '00:45:00'
 
@@ -153,6 +168,17 @@ export default function Results() {
           {new Date().toLocaleString()} · Total {totalTime}
         </div>
       </div>
+
+      {!hasEvaluation ? (
+        <div className="mb-6 rounded-lg border border-amber-500/60 bg-[#0f141b] px-4 py-3 text-xs text-text-secondary">
+          AI evaluation unavailable. {evaluationError ? `Reason: ${evaluationError}` : 'Falling back to objective execution summary.'}
+          {testPassCount != null && testTotalCount != null ? (
+            <div className="mt-2 mono text-text-primary">
+              Judge0 tests passed: {testPassCount}/{testTotalCount}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-xl border border-border bg-surface p-6 lg:col-span-1">

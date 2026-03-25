@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import AuthModal from '../components/AuthModal'
 import { useAuthOptional } from '../hooks/useAuth'
 import { api } from '../lib/api'
 import { supabase } from '../lib/supabase'
@@ -47,8 +46,6 @@ export default function Landing() {
   const auth = useAuthOptional()
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
-  const [authOpen, setAuthOpen] = useState(false)
-  const [authMode, setAuthMode] = useState('signin')
 
   const userId = useMemo(() => auth?.user?.id || getOrCreateUserId(), [auth?.user?.id])
 
@@ -141,7 +138,7 @@ export default function Landing() {
             {supabase && !auth?.signedIn && (
               <button
                 type="button"
-                onClick={() => { setAuthMode('signin'); setAuthOpen(true) }}
+                onClick={() => nav('/signin')}
                 className="rounded-md border border-border bg-[#0b0f14] px-2 py-1 text-xs text-text-secondary hover:text-text-primary"
               >
                 Sign in
@@ -379,14 +376,6 @@ export default function Landing() {
         </Modal>
       ) : null}
 
-      {authOpen && supabase ? (
-        <AuthModal
-          mode={authMode}
-          onClose={() => setAuthOpen(false)}
-          onSuccess={() => setAuthOpen(false)}
-          onSwitchMode={(m) => setAuthMode(m)}
-        />
-      ) : null}
     </div>
   )
 }

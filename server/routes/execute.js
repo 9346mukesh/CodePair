@@ -18,6 +18,9 @@ router.post('/', async (req, res) => {
     const { code, language_id, stdin, tests } = req.body || {}
     if (typeof code !== 'string') return res.status(400).json({ error: 'code must be a string' })
     if (!language_id) return res.status(400).json({ error: 'language_id is required' })
+    if (code.length > 200_000) return res.status(413).json({ error: 'code too large' })
+    if (stdin && typeof stdin !== 'string') return res.status(400).json({ error: 'stdin must be a string' })
+    if (Array.isArray(tests) && tests.length > 30) return res.status(400).json({ error: 'too many tests' })
 
     const headers = {
       'Content-Type': 'application/json',
@@ -77,6 +80,10 @@ router.post('/', async (req, res) => {
 
     const results = []
     for (const t of testList) {
+      if (t?.stdin && t.stdin.length > 20_000) return res.status(413).json({ error: 'stdin too large' })
+      if (t?.expectedOutput && t.expectedOutput.length > 5_000) {
+        return res.status(413).json({ error: 'expectedOutput too large' })
+      }
       // eslint-disable-next-line no-await-in-loop
       const out = await runSingle({ stdinOverride: t.stdin || '' })
       const expected = typeof t.expectedOutput === 'string' ? t.expectedOutput : null
