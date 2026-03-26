@@ -121,11 +121,19 @@ Note: `rooms` includes `problem_id` so the assigned problem is consistent for bo
 ## Screenshots
 
 - Landing:
-![alt text](<Screenshots/Screenshot 2026-03-22 at 12.27.03 PM.png>)
+
+<img width="1434" height="723" alt="Screenshot 2026-03-22 at 12 27 03 PM" src="https://github.com/user-attachments/assets/d986b50b-2bb7-4533-95d5-682d6085d2d6" />
+
 - Lobby:
-![alt text](<Screenshots/Screenshot 2026-03-22 at 12.27.33 PM.png>)
+  
+<img width="1438" height="717" alt="Screenshot 2026-03-22 at 12 27 33 PM" src="https://github.com/user-attachments/assets/9e9ef3d8-16c2-434c-99ab-bbb3aacec946" />
+
 - Session:
-![alt text](<Screenshots/Screenshot 2026-03-22 at 12.30.57 PM.png>)
+
+<img width="1428" height="727" alt="Screenshot 2026-03-22 at 12 30 57 PM" src="https://github.com/user-attachments/assets/3f1c37c0-be26-41ab-bd2f-c4d224d1ee65" />
+
 - Results:
-![alt text](<Screenshots/Screenshot 2026-03-22 at 12.31.51 PM.png>)
+
+<img width="1437" height="714" alt="Screenshot 2026-03-22 at 12 31 51 PM" src="https://github.com/user-attachments/assets/4cea4024-32de-4cce-960c-4abd28f9da57" />
+
 
